@@ -1,0 +1,26 @@
+js to handle search
+
+
+
+function searchProducts() {
+  let query = document.getElementById("search-bar").value.toLowerCase();
+  let resultsContainer = document.getElementById("search-results");
+  resultsContainer.innerHTML = ""; // Clear previous results
+
+  let products = [
+    { name: "Laptop", link: "product1.html" },
+    { name: "Smartphone", link: "product2.html" },
+    { name: "Headphones", link: "product3.html" },
+    { name: "Smartwatch", link: "product4.html" }
+  ];
+
+  let filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(query)
+  );
+
+  filteredProducts.forEach(product => {
+    let li = document.createElement("li");
+    li.innerHTML = `<a href="${product.link}">${product.name}</a>`;
+    resultsContainer.appendChild(li);
+  });
+}

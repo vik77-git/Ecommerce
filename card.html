@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Payment</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- SweetAlert Library -->
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #card-details {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, select {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #5cb85c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #4cae4c;
+    }
+  </style>
+</head>
+<body>
+
+<section id="card-details">
+  <h1>Card Payment</h1>
+
+  <form id="card-payment-form" onsubmit="processPayment(event)">
+    <label for="card-number">Card Number:</label>
+    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="16" required>
+
+    <label for="expiry">Card Expiry:</label>
+    <select id="expiry-month" required>
+      <option value="" disabled selected>Month</option>
+      <option value="01">January</option>
+      <option value="02">February</option>
+      <option value="03">March</option>
+      <option value="04">April</option>
+      <option value="05">May</option>
+      <option value="06">June</option>
+      <option value="07">July</option>
+      <option value="08">August</option>
+      <option value="09">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
+    </select>
+    <select id="expiry-year" required>
+      <option value="" disabled selected>Year</option>
+      <script>
+        let currentYear = new Date().getFullYear();
+        for (let i = currentYear; i <= currentYear + 10; i++) {
+          document.write(`<option value="${i}">${i}</option>`);
+        }
+      </script>
+    </select><br>
+
+    <label for="cvv">CVV:</label>
+    <input type="password" id="cvv" maxlength="3" required><br>
+
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" placeholder="Enter your email" required>
+
+    <button type="submit">Pay Now</button>
+  </form>
+
+</section>
+
+<script>
+function validateCardNumber(cardNumber) {
+  let regex = /^[0-9]{16}$/;
+  return regex.test(cardNumber);
+}
+
+function validateCVV(cvv) {
+  let regex = /^[0-9]{3}$/;
+  return regex.test(cvv);
+}
+
+function processPayment(event) {
+  event.preventDefault();
+  let cardNumber = document.getElementById("card-number").value;
+  let cvv = document.getElementById("cvv").value;
+  let expiryMonth = document.getElementById("expiry-month").value;
+  let expiryYear = document.getElementById("expiry-year").value;
+  let email = document.getElementById("email").value;
+
+  if (!validateCardNumber(cardNumber)) {
+    Swal.fire("Error", "Invalid Card Number. Please enter a valid 16-digit card number.", "error");
+    return;
+  }
+
+  if (!validateCVV(cvv)) {
+    Swal.fire("Error", "Invalid CVV. Please enter a valid 3-digit CVV.", "error");
+    return;
+  }
+
+  fetch('/send-email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      Swal.fire("Success", "Payment successful! Your E-Card has been sent to your email.", "success");
+    } else {
+      Swal.fire("Error", "Failed to send email. Please try again.", "error");
+    }
+  })
+  .catch(error => {
+    Swal.fire("Error", "Something went wrong.", "error");
+  });
+}
+</script>
+
+</body>
+</html>

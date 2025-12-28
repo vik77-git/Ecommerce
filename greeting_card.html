@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My E-Commerce Store</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <img src="Elogo.png" alt="My Logo" class="logo">
+    <style>
+      .logo {
+        width: 150px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+    
+  </header>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="login.html" id="auth-link">Login</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cart.html">Cart (<span id="cart-count">0</span>)</a></li>
+        <li><a href="checkout.html">Checkout</a></li>
+      </ul>
+    </nav>
+    <h2>Greeting card</h2>
+  </header>
+  <section id="products">
+    <div class="product">
+      <a href="product.html?name=Greeting Card&price=150&image=Greeting%20Card.jfif&description=Beautiful greeting card for any occasion">
+        <img src="Greeting Card.jfif" alt="Greeting Card">
+        <h2>Greeting Card</h2>
+        <p>₹150.00</p>
+      </a>
+      <button onclick="addToCart('Greeting Card', 150)">Add to Cart</button>
+    </div>
+  </section>
+  <p style="font-family: 'Times New Roman', Times, serif, sans-serif; color: black font-size: 18px;">
+    A beautifully designed card, adorned with heartfelt messages and vibrant visuals, crafted to convey warmth, love, and care. Whether it's a birthday, anniversary, festive celebration, or just a moment to say 'thank you' or 'I care,' each greeting card becomes a meaningful token of connection and joy.
+  </p>  
+
+<footer>
+  <p>© E-CARD Your Digital Store</p>
+  <p>Contact: <a href="mailto:vikram14markiv@gmail.com" style="color:white">Email</a> us</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

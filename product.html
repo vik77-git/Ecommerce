@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Include SweetAlert2 -->
+  <head>
+    <style>
+      header {
+        margin-bottom: 10px;
+        padding-bottom: 1px;
+      }
+      
+      h1 {
+        margin-top: 0px;
+        padding-top: 0px;
+        text-align: center;
+      }
+  
+      nav {
+  margin-top: -7px; /* Move navbar up */
+  padding-top: 0; /* Remove extra space inside */
+}
+
+    </style>
+  </head>
+  
+</head>
+<body>
+
+<header>
+  <h1>Product Details</h1>
+  <nav>
+    <ul>
+      <li><a href="login.html" id="auth-link">Login</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="checkout.html">Checkout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section id="product-details">
+  <img id="product-image" src="" alt="Product Image">
+  <h2 id="product-name"></h2>
+  <p id="product-price"></p>
+  <p id="product-description"></p>
+  <button onclick="addToCartFromDetails()">Add to Cart</button>
+  <a href="cart.html"><button>Go to cart</button></a>
+  
+</section>
+
+<footer> 
+  <p>© E-CARD Your Digital Store</p>
+  <p>Contact: <a href="mailto:vikram14markiv@gmail.com" style="color:white">Email</a> us</p>
+  <p>Welcome to E-CARD, your go-to online store for beautifully crafted digital and printable cards. Explore a world of creativity with our exclusive card designs!
+     </p>
+     <p>🛒 Shop Now | Secure Checkout | Instant Access</p>
+</footer>
+
+<script>
+  // Get product details from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const productName = urlParams.get("name"); // Changed from 'name' to 'productName'
+  const price = urlParams.get("price");
+  const image = urlParams.get("image");
+  const description = urlParams.get("description");
+  
+  // Ensure values are valid
+  if (productName && price && image) {
+    document.getElementById("product-name").textContent = productName;
+    document.getElementById("product-price").textContent = "₹" + price;
+    document.getElementById("product-image").src = image;
+    document.getElementById("product-description").textContent = description;
+  } else {
+    alert("Error: Product details missing!");
+  }
+  
+  // Function to add product to cart
+  function addToCartFromDetails() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  
+    // Validate product details
+    if (!productName || !price || !image) {
+      alert("Error: Invalid product details!");
+      return;
+    }
+  
+    // Create product object
+    let product = {
+      product: decodeURIComponent(productName), // Fixed: use 'product' instead of 'name'
+      price: parseFloat(price),
+      image: decodeURIComponent(image),
+      quantity: 1
+    };
+  
+    // Check if the product already exists in the cart
+    let existingProduct = cart.find(item => item.product === product.product);
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+    } else {
+      cart.push(product);
+    }
+  
+    // Save updated cart to localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+  
+    Swal.fire({
+      icon: "success",
+      title: `${product.product} Added to Cart ✅`,
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<header>
+  <h1>Checkout</h1>
+  <nav>
+    <ul>
+      <li><a href="login.html" id="auth-link">Login</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="cart.html">Cart (<span id="cart-count">0</span>)</a></li>
+    </ul>
+  </nav>
+</header>
+
+<center>
+<section id="checkout">
+  <h2>Billing Details</h2>
+  <form onsubmit="return validateForm()">
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" required><br>
+
+    <label for="address">Email:</label>
+    <input type="email" id="address" required><br>
+
+    <label for="payment">Payment Method:</label>
+    <select id="payment" required onchange="togglePaymentOptions()">
+      <option value="" disabled selected>Select Payment Option</option>
+      <option value="card">Credit/Debit Card</option>
+      <option value="upi">UPI</option>
+    </select>
+
+    <!-- UPI Payment Info (show when UPI is selected) -->
+    <div id="upi-info" style="display:none;">
+      <p>Please proceed with the UPI payment by scanning the QR code.</p>
+    </div>
+
+    <!-- Card Payment Info (show when Card is selected) -->
+    <div id="card-info" style="display:block;">
+      <p>Please enter your credit or debit card details.</p>
+    </div>
+
+    <h2>Order Summary</h2>
+    <div id="cart-summary"></div>
+    <p><strong>Total:</strong> ₹<span id="total-price">0</span></p>
+
+    <button type="button" onclick="goToPayment()">Proceed to Payment</button>
+  </form>
+</section>
+</center>
+
+<footer>
+  <p>© E-CARD Your Digital Store</p>
+  <p>Contact: <a href="mailto:vikram14markiv@gmail.com" style="color:white">Email</a></p>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // Display the cart summary and total price on the checkout page
+  function displayCheckoutCart() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartSummary = document.getElementById("cart-summary");
+    let totalPrice = document.getElementById("total-price");
+
+    cartSummary.innerHTML = "";
+    let total = 0;
+
+    if (cart.length === 0) {
+      cartSummary.innerHTML = "<p>Your cart is empty. Add items before checkout.</p>";
+      totalPrice.innerText = "0";
+      return;
+    }
+
+    cart.forEach(item => {
+      let div = document.createElement("div");
+      div.innerHTML = `<p>${item.product} - ₹${item.price} x ${item.quantity}</p>`;
+      cartSummary.appendChild(div);
+      total += item.price * item.quantity;
+    });
+
+    totalPrice.innerText = total;
+  }
+
+  // Toggle between UPI and Card Payment Info based on selected payment method
+  function togglePaymentOptions() {
+    const paymentMethod = document.getElementById("payment").value;
+    if (paymentMethod === "upi") {
+      document.getElementById("upi-info").style.display = "block";
+      document.getElementById("card-info").style.display = "none";
+    } else if (paymentMethod === "card") {
+      document.getElementById("upi-info").style.display = "none";
+      document.getElementById("card-info").style.display = "block";
+    } else {
+      // If no payment method is selected (Select Payment Option), hide both
+      document.getElementById("upi-info").style.display = "none";
+      document.getElementById("card-info").style.display = "none";
+    }
+  }
+
+  // Validate the checkout form
+  function validateForm() {
+    let name = document.getElementById("name").value;
+    let address = document.getElementById("address").value;
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    if (name.trim() === "" || address.trim() === "") {
+      Swal.fire("Error", "Please fill out all required fields", "error");
+      return false;
+    }
+
+    if (cart.length === 0) {
+      Swal.fire("Error", "Your cart is empty. Add items before proceeding.", "error");
+      return false;
+    }
+
+    return true;
+  }
+
+  // Go to the payment page based on the selected payment method
+  function goToPayment() {
+    if (validateForm()) {
+      let payment = document.getElementById("payment").value;
+      if (payment === "upi") {
+        window.location.href = "qr.html";  // UPI Payment Page
+      } else if (payment === "card") {
+        window.location.href = "card.html";  // Card Payment Page
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    displayCheckoutCart();
+    updateCartCount();
+    togglePaymentOptions();  // To ensure the correct payment info is shown
+  });
+</script>
+</body>
+</html>

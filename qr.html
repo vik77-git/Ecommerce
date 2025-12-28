@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPI Payment</title>   
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      width: 400px;
+      margin: 70px auto;
+      padding: 1px;
+      border: 1px solid black;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 15px 15px 15px rgba(57, 55, 55, 0.2);
+      text-align: center;
+    }
+
+    #progress-bar {
+      width: 100%;
+      height: 10px;
+      background: green;
+      transition: width 1s linear, background 1s linear;
+      display: none;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    #qr-container {
+      position: relative;
+      width: 250px;
+      height: auto;
+      display: none;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    #qr-image {
+      width: 250px;
+      margin-top: 20px;
+      filter: blur(10px);
+      transition: filter 1s ease-in-out;
+    }
+
+    .scanner-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: red;
+      opacity: 0.8;
+      animation: scan 2s linear infinite alternate;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 90%; }
+    }
+
+    #expire {
+      margin-top: 10px;
+      font-size: 18px;
+      color: red;
+    }
+
+    #timer {
+      display: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: #0a3968;
+      text-align: center;
+      background: #f2f2f2;      
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      background: #05ca4a;
+      color: white;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    button:disabled {
+      background: gray;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html" style="color: rgb(214, 17, 17);">Home</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>UPI Payment</h1>
+    <button id="generate-btn" onclick="startTimer()">Generate QR</button>
+    <div id="timer">Generating QR in 3...</div>
+    <div id="qr-container">
+      <img id="qr-image" src="E-Pay.png" alt="UPI QR Code">
+      <div class="scanner-line"></div>
+      <div id="expire" style="display: none;">QR will expire in <span id="countdown">30</span> seconds</div>  
+    </div>
+    <div id="progress-bar"></div>
+    <center>
+      <button id="pay-btn" style="display: none;">I Have Paid</button>
+    </center>
+  </div>
+
+  <script>
+    let isQRGenerated = false;
+    let expireInterval;
+
+    function startTimer() {
+      if (isQRGenerated) return;
+      isQRGenerated = true;
+      document.getElementById("generate-btn").disabled = true;
+
+      let timer = document.getElementById("timer");
+      let qrContainer = document.getElementById("qr-container");
+      let qrImage = document.getElementById("qr-image");
+      let countdownText = document.getElementById("countdown");
+      let progressBar = document.getElementById("progress-bar");
+      let payBtn = document.getElementById("pay-btn");
+      let expireText = document.getElementById("expire");
+
+      timer.style.display = "block";
+      let count = 3;
+      let interval = setInterval(() => {
+        count--;
+        timer.innerText = `Generating QR in ${count}...`;
+        if (count === 0) {
+          clearInterval(interval);
+          timer.style.display = "none";
+          qrContainer.style.display = "block";
+          qrImage.style.filter = "blur(10px)";
+
+          setTimeout(() => {
+            qrImage.style.filter = "blur(0)";
+            setTimeout(() => {
+              progressBar.style.display = "block";
+              payBtn.style.display = "block";
+              expireText.style.display = "block";
+              progressBar.style.width = "100%";
+              let expireCount = 30;
+              expireInterval = setInterval(() => {
+                expireCount--;
+                countdownText.innerText = expireCount;
+                let percentage = (expireCount / 30) * 100;
+                progressBar.style.width = `${percentage}%`;
+                if (percentage <= 60) progressBar.style.background = "orange";
+                if (percentage <= 30) progressBar.style.background = "red";
+                if (expireCount === 0) {
+                  clearInterval(expireInterval);
+                  qrContainer.style.display = "none";
+                  progressBar.style.display = "none";
+                  payBtn.style.display = "none";
+                  Swal.fire({
+                    icon: "error",
+                    title: "QR Code Expired",
+                    text: "Payment Cancelled",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false
+                  }).then(() => {
+                    window.location.href = "checkout.html";
+                  });
+                }
+              }, 1000);
+            }, 1000);
+          }, 3000);
+        }
+      }, 1000);
+    }
+
+    document.getElementById("pay-btn").addEventListener("click", function() {
+      clearInterval(expireInterval);
+      Swal.fire({
+        icon: "success",
+        title: "Payment Successful",
+        text: "Your e-card will be downloaded now!",
+        confirmButtonText: "Download"
+      }).then(() => {
+        downloadEcards();
+      });
+    });
+
+    function downloadEcards() {
+      const fileUrl = "Download/BirthdayCard.pdf";
+      const a = document.createElement("a");
+      a.href = fileUrl;
+      a.download = "BirthdayCard.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

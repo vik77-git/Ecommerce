@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <nav>
+    <ul>
+      <li><a href="index.html" style="color: rgb(214, 17, 17);">Home</a></li>
+    </ul>
+  </nav>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- SweetAlert Library -->
+
+  <style>
+    body {
+      text-align: center;
+      background: #f3f3f3;
+    }
+    form {
+      padding: 40px;
+      background: white;
+      display: inline-block;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+/*   nav {
+      padding: 20px;
+      background: blue;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      height: 20px;
+      border-radius: 5px;
+      cursor: pointer; */
+    }
+    input {
+      padding: 10px;
+      width: 300px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+    button {
+      background: rgb(6, 192, 6);
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Register</h1>
+<form id="register-form" onsubmit="registerUser(event)">
+  <input type="text" id="username" placeholder="Username" required><br>
+  <input type="email" id="email" placeholder="Email" required><br>
+  <input type="text" id="ph_no" placeholder="Phone Number" maxlength="10"><br>
+  <input type="password" id="password" placeholder="Password" required><br>
+  <input type="password" id="re-enter_pass" placeholder="Re-enter Password" required><br>
+
+  <button type="button" onclick="generateOTP()">Get OTP</button>
+  
+  <div id="otp-section" style="display:none;">
+    <input type="text" id="otp" placeholder="Enter OTP">
+    <button type="submit">Register</button>
+  </div>
+</form>
+
+<p>Already have an account? <a href="login.html" style="color: rgb(214, 17, 17);">Login</a></p>
+
+<script>
+let generatedOTP = "";
+
+function generateOTP() {
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("re-enter_pass").value;
+
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  if (!regex.test(password)) {
+    Swal.fire({
+      icon: "error",
+      title: "Invalid Password",
+      text: "Password must have 8 characters, uppercase, lowercase, number & special character",
+    });
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    Swal.fire({
+      icon: "error",
+      title: "Passwords Do Not Match",
+      text: "Please enter the same password in both fields.",
+    });
+    return;
+  }
+
+  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+  Swal.fire({
+    icon: "info",
+    title: "OTP Sent",
+    text: `Your OTP is: ${generatedOTP}`,
+    confirmButtonText: "OK"
+  });
+
+  document.getElementById("otp-section").style.display = "block";
+}
+
+function registerUser(event) {
+  event.preventDefault();
+
+  const otp = document.getElementById("otp").value;
+
+  if (otp !== generatedOTP) {
+    Swal.fire({
+      icon: "error",
+      title: "Invalid OTP",
+      text: "Please enter the correct OTP.",
+    });
+    return;
+  }
+
+  let username = document.getElementById("username").value;
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  users.push({ username, email, password });
+  localStorage.setItem("users", JSON.stringify(users));
+
+  Swal.fire({
+    icon: "success",
+    title: "Registration Successful",
+    text: "You have been registered successfully!",
+    confirmButtonText: "OK"
+  }).then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

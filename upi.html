@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPI Payment</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>UPI Payment</h1>
+
+<button id="generate-btn">Generate QR Code</button>
+
+<div id="timer" style="display:none; font-size: 20px; margin-top: 20px; color: blue;"></div>
+<div id="qr-container" style="display:none;">
+  <h2>Scan to Pay</h2>
+  <canvas id="qr-code"></canvas>
+  <div id="expire-timer" style="font-size: 18px; color: red; margin-top: 10px;"></div>
+</div>
+
+<!-- Hidden Direct Pay Link -->
+<a id="direct-pay-link" href="#" style="display:none;">Click here if QR not working</a>
+
+<a href="checkout.html">Go Back</a>
+
+<script>
+  document.getElementById("generate-btn").addEventListener("click", function () {
+    const timer = document.getElementById("timer");
+    const qrContainer = document.getElementById("qr-container");
+    const expireTimer = document.getElementById("expire-timer");
+    const directPayLink = document.getElementById("direct-pay-link");
+
+    timer.style.display = "block";
+    timer.innerHTML = "Generating QR Code in 3...";
+
+    let count = 3;
+
+    const interval = setInterval(() => {
+      count--;
+      timer.innerHTML = `Generating QR Code in ${count}...`;
+      if (count === 0) {
+        clearInterval(interval);
+        timer.style.display = "none";
+        qrContainer.style.display = "block";
+
+        // 🔥 Your Direct UPI Payment Link 🔥
+        const upiLink = "upi:pay?pa=udhayakumar130873@oksbi&pn=Vikram%20Udhayakumar&aid=uGICAgID1m8qzCg";  // Replace with your UPI
+
+        // Generate QR Code
+        const qr = new QRious({
+          element: document.getElementById("qr-code"),
+          value: upiLink, // Direct Payment Link
+          size: 200,
+          background: "white",
+          foreground: "#000"
+        });
+
+        // Also Provide a Direct Pay Link in case QR fails
+        directPayLink.href = upiLink;
+        directPayLink.style.display = "block";
+        directPayLink.innerText = "Click here if QR not working";
+
+        // 30 Seconds Timer
+        let expireCount = 30;
+        expireTimer.innerHTML = `QR Code Valid for ${expireCount} Seconds`;
+
+        const expireInterval = setInterval(() => {
+          expireCount--;
+          expireTimer.innerHTML = `QR Code Valid for ${expireCount} Seconds`;
+
+          if (expireCount === 0) {
+            clearInterval(expireInterval);
+            alert("QR Code Expired ❌");
+            window.location.href = "checkout.html";
+          }
+        }, 1000);
+      }
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>

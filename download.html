@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Your Content</title>
+</head>
+<body>
+  <h1>Download Your Purchased Content</h1>
+  <p>Click the link below to download your content:</p>
+  <a id="download-link" href="#" download>Download Now</a>
+
+  <script>
+    // Fetch the file dynamically based on purchase
+    document.addEventListener("DOMContentLoaded", function() {
+      let purchasedFile = localStorage.getItem("purchasedFile"); // Fetch from storage/session
+      if (purchasedFile) {
+        document.getElementById("download-link").href = purchasedFile;
+      } else {
+        document.body.innerHTML = "<p>Invalid request. No file found.</p>";
+      }
+    });
+  </script>
+</body>
+</html>

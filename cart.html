@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+    <style>
+      header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.logo {
+  height: 50px; /* Adjust size as needed */
+}
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .logo {
+    height: 50px; /* Adjust size as needed */
+  }
+
+  h1 {
+    flex-grow: 10;
+    text-align: center; /* Move text to the left */
+    margin-right:-100px; /* Adjust this value to move it further left */
+  }
+
+
+    </style>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<header>
+  
+  <img src="Elogo.png" alt="My Logo" class="logo">
+  <h1>Your Cart</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="checkout.html">Checkout</a></li>
+      <li><a href="login.html" id="auth-link">Login</a></li>
+    </ul>
+  </nav>
+  
+</header>
+
+<section>
+    <h2>Your Cart Items</h2>
+    <div id="cart-list"></div>
+    <p id="total-price">Total: ₹ 0</p>
+    <button onclick="clearCart()" class="clear-cart-btn">Clear Cart</button>
+  </section>
+<footer>
+  <p>© E-CARD Your Digital Store</p>
+  <p>Contact: <a href="mailto:vikram14markiv@gmail.com" style="color:white">Email</a> us</p>
+</footer>
+
+<script src="app.js">
+  document.addEventListener("DOMContentLoaded", function () {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cartContainer = document.getElementById("cart-items");
+
+  if (cart.length === 0) {
+    cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+    return;
+  }
+
+  cart.forEach(item => {
+    let cartItem = document.createElement("div");
+    cartItem.classList.add("cart-item");
+    cartItem.innerHTML = `
+      <img src="${item.image}" alt="${item.name}" width="50">
+      <h3>${item.name}</h3>
+      <p>₹${item.price}</p>
+      <p>Quantity: ${item.quantity}</p>
+      <button onclick="removeFromCart('${item.name}')">Remove</button>
+    `;
+    cartContainer.appendChild(cartItem);
+  });
+});
+
+
+</script>
+</body>
+</html>

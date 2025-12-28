@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My E-Commerce Store</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <img src="Elogo.png" alt="My Logo" class="logo">
+    <style>
+      .logo {
+        width: 150px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+    
+  </header>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="login.html" id="auth-link">Login</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cart.html">Cart (<span id="cart-count">0</span>)</a></li>
+        <li><a href="checkout.html">Checkout</a></li>
+      </ul>
+    </nav>
+    <h2>Wedding card</h2>
+  </header>
+  <section id="products">
+    <div class="product">
+        <a href="product.html?name=Wedding Card&price=120&image=Wedding%20Card.jfif&description=Elegant wedding card for your special moments">
+            <img src="Wedding Card.jfif" alt="Wedding Card">
+            <h2>Wedding Card</h2>
+            <p>₹120.00</p>
+          </a>
+        <button onclick="addToCart('Wedding Card', 120)">Add to Cart</button>
+    </div>
+  </section>
+  <p style="font-family: 'Times New Roman', Times, serif, sans-serif; color: black font-size: 18px;">
+    Beautifully designed cards with elegant fonts, subtle motifs, and color schemes that match the wedding theme. They include the couple's names, date, venue, and RSVP details. Sometimes, poetic or heartfelt phrases set the tone.
+  </p>  
+
+<footer>
+  <p>© E-CARD Your Digital Store</p>
+  <p>Contact: <a href="mailto:vikram14markiv@gmail.com" style="color:white">Email</a> us</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
